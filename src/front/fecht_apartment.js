@@ -17,8 +17,8 @@ create_apartment: async (address, postal_code, city, parking, is_rent, owner_id,
             const request = await fetch(`${Url}/create`, {
                 method: "POST",
                 headers: {
-                     "content-Type": "application/json",
-                    "Authorization": `Bearer  ${token}`
+                     "Content-Type": "application/json",
+                     "Authorization": `Bearer  ${token}`
                 },  
                 body: JSON.stringify(apart)
 

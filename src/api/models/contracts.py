@@ -31,14 +31,12 @@ class Contract(db.Model):
             "end_date": self.end_date,
             "document": self.document,
             "owner_id": self.owner_id
-
-
         }
     
     def serialize_with_relations(self):
         data = self.serialize()
-        data['owner'] = [owner.serialize() for owner in self.owner],
-        data['association']=[association.serialize() for association in self.contracts],
+        data['owner'] = self.owner.serialize() if self.owner else None,
+        data['association']=[association.serialize() for association in self.association],
         return data 
       
            

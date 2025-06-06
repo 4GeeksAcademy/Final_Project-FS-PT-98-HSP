@@ -5,43 +5,51 @@ import MenuLateral from "../components/MenuLateral";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { useEffect, useState } from "react";
 
+import { format, differenceInDays } from 'date-fns';
+
+
+
 const Contrato = () => {
   const { store, dispatch } = useGlobalReducer();
   const [item,setItem]=useState(null)
 
+  const [item, setItem] = useState()
+
   const fetchData = async () => {
     try {
 
-      const data = await users.getUserContracts(store.todos[0].id, store.token);
-      if(!data.error){
+      const data = await users.getUserContracts(store.todos.id, store.token);
+      if (!data.error) {
         await dispatch({ type: "add_contracts", value: data.contracts });
       }
-      
-
     } catch (error) {
-      //console.error("Error al cargar total de contratos", error);
-
+      
     }
   };
+
   useEffect(() => {
 
     fetchData();
   }, []);
-  const handleDownloadContract= async () =>{
+  
+  const handleDownloadContract = async () => {
+    console.log(item)
     try {
+
       const data = contracts.downloadcontract(item,store.token)
       
+
     } catch (error) {
-      
+
     }
   };
-  const downContract=async()=>{
-    handleDownloadContract()
+  const downContract = async () => {
+    await handleDownloadContract();
   }
   const handleCreatecontract = async () => {
 
     try {
-      const data = await contracts.create_contract(store.contract_start_date, store.contract_end_date, store.contract, store.todos[0].id, store.token);
+      const data = await contracts.create_contract(store.contract_start_date, store.contract_end_date, store.contract, store.todos.id, store.token);
       console.log(data);
       console.log(data.error)
       if (data.message === "El contrato ha sido registrado satisfactoriamente") {
@@ -70,9 +78,7 @@ const Contrato = () => {
   const Ccontract = async () => {
     await
       handleCreatecontract();
-
   };
-  console.log(store.contracts)
 
   return (
     <>
@@ -89,54 +95,60 @@ const Contrato = () => {
               <h2>Gestión de Contratos</h2>
               <p>Aquí puedes visualizar, cargar o gestionar contratos activos.</p>
               <div className="map" style={{ display: `${store.visibility2}` }}>
-              <ul className="list-group">
-                {
-                store.contracts[0]?.map((item) => {
-                  const startDate = new Date(item.start_date).toLocaleDateString("es-ES", {
-                    day: "2-digit",
-                    month: "long",
-                    year: "numeric"
-                  });
 
-                  const endDate = new Date(item.end_date).toLocaleDateString("es-ES", {
-                    day: "2-digit",
-                    month: "long",
-                    year: "numeric"
-                  }
-                );
-                const splitDocument= item.document.split("/").pop();
-                  return (
-                    <li
-                      key={item.id}
-                      className="list-group-item d-flex justify-content-between"
-                      style={{ background: item.background }}>
-                      <div className="contratitem">
-                        <p>Fecha de inicio: {startDate}</p>
-                        <p>Fecha de finalizacion: {endDate}</p>
-                        <p>Contrato: {splitDocument}</p>
-                      </div>
-                      <button className="btn btn-success"
-                        onClick={(e)=>{setItem(item.id),downContract}}>
-                        Consultar Contrato
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-              <button className="btn btn-success"
-                        onClick={(e) => {
-                              e.preventDefault();
-                              dispatch({
-                                type: "register",
-                                value: "none",
-                              })
-                              dispatch({
-                                type: "login",
-                                value: "",
-                              })
-                            }}>Añadir Contrato</button>
+                <ul className="list-group">
+                  {
+                    store && store.contracts.map((item) => {
+                      const startDate = new Date(item.start_date).toLocaleDateString("es-ES", {
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric"
+                      });
+
+                      const endDate = new Date(item.end_date).toLocaleDateString("es-ES", {
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric"
+                      }
+                      );
+                      const splitDocument = item.document.split("/").pop();
+                      const start = new Date();
+                      const end =new Date(item.end_date);
+                      const diffDays = differenceInDays(end, start, "days")
+                      return (
+                        <li
+                          key={item.id}
+                          className="list-group-item d-flex justify-content-between"
+                          style={{ background: item.background }}>
+                          <div className="contratitem">
+                            <p>Fecha de inicio: {startDate}, Fecha de Finalizacion: {endDate}, Documento: {splitDocument} Flatán {diffDays} días para su finalización </p>
+                          </div>
+                          <button className="btn btn-success bt"
+                            onClick={(e) => {
+                              setItem(item.id);
+                              downContract(item.id);
+                            }}>
+                            Consultar Contrato
+                          </button>
+                        </li>
+                      );
+                    })}
+                </ul>
+                <button className="btn btn-success"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    dispatch({
+                      type: "register",
+                      value: "none",
+                    })
+                    dispatch({
+                      type: "login",
+                      value: "",
+                    })
+                  }}>Añadir Contrato</button>
+
               </div>
-              
+
               <div className="form" style={{ display: `${store.visibility}` }}>
                 <div className="mb-3">
                   <label htmlFor="start_day" className="form-label">
@@ -150,6 +162,7 @@ const Contrato = () => {
                       dispatch({ type: "addstart_date", value: e.target.value })}
                   />
                 </div>
+                
                 <div className="mb-3">
                   <label htmlFor="start_day" className="form-label">
                     Fecha de Fin
@@ -172,7 +185,6 @@ const Contrato = () => {
                     className="form-control"
                     id="pdfUpload"
                     accept="application/pdf"
-
                     onChange={(e) => dispatch({ type: "addcontract", value: e.target.files[0] })}
                   />
                 </div>
@@ -180,18 +192,17 @@ const Contrato = () => {
                   Guardar Contrato
                 </button>
                 <button className="btn btn-success mi-button"
-                        onClick={(e) => {
-                              e.preventDefault();
-                              dispatch({
-                                type: "register",
-                                value: "",
-                              })
-                              dispatch({
-                                type: "login",
-                                value: "none",
-                              })
-                              fetchData()
-                            }}>Salir</button>
+                  onClick={() => {
+                    dispatch({
+                      type: "register",
+                      value: "",
+                    })
+                    dispatch({
+                      type: "login",
+                      value: "none",
+                    })
+                    fetchData()
+                  }}>Salir</button>
               </div>
             </div>
           </div>

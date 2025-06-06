@@ -80,6 +80,23 @@ getcontract: async () => {
     console.log(error);
     return error;
   }
-}
+},
+delete_contract: async (id,token) => {
+        try {
+            const request = await fetch(`${Url}/${id}`, {
+                method: "DELETE",
+                 headers: {
+                "Authorization": `Bearer ${token}` 
+            },
+            })
+            const response = await request.json();
+            console.log(response)
+            return response
+        } catch (error) {
+            console.log(error)
+            return error
+
+        }
+    },
 
  }

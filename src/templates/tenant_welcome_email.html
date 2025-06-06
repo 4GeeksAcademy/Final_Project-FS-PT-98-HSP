@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido a InmuGestion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eeeeee;
+        }
+        .header h1 {
+            color: #333333;
+            font-size: 24px;
+            margin: 0;
+        }
+        .content {
+            padding: 20px 0;
+            line-height: 1.6;
+            color: #555555;
+        }
+        .button-container {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .button {
+            display: inline-block;
+            background-color: #007bff; /* Color azul */
+            color: #ffffff;
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #eeeeee;
+            font-size: 12px;
+            color: #888888;
+        }
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100% !important;
+                margin: 0 auto;
+                padding: 15px;
+            }
+            .button {
+                width: 100% !important;
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>¡Bienvenido a {{ app_name }}!</h1>
+        </div>
+        <div class="content">
+            <p>Hola {{ first_name }},</p>
+            <p>Tu propietario te ha registrado en InmuGestion. Para activar tu cuenta y establecer tu contraseña, por favor haz clic en el siguiente botón:</p>
+            <div class="button-container">
+                <a href="{{ setup_password_link }}" class="button">Configurar Contraseña</a>
+            </div>
+            <p>Este enlace te permitirá configurar tu contraseña y acceder a tu perfil de inquilino.</p>
+            <p>Si tienes alguna pregunta, no dudes en contactar a tu propietario.</p>
+            <p>Saludos cordiales,</p>
+            <p>El equipo de InmuGestion</p>
+        </div>
+        <div class="footer">
+            <p>&copy; InmuGestion. Todos los derechos reservados.</p>
+            <p>Si tienes problemas con el enlace, cópialo y pégalo en tu navegador: <br> <a href="{{ setup_password_link }}">{{ setup_password_link }}</a></p>
+        </div>
+    </div>
+</body>
+</html>

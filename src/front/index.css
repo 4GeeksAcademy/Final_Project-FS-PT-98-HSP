@@ -1,14 +1,68 @@
-.log{
-    width: 50%;
-    margin: auto;
+.log {
+  width: 50%;
+  margin: auto;
 }
-#is_rent{
-    width: 20px;
+#is_rent {
+  width: 20px;
 }
-.contratitem{
-    display: flex;
-    flex-direction: column;
+.contratitem {
+  display: flex;
+  flex-direction: column;
+}
+.mi-button {
+  margin-left: 20px;
+}
+.bt {
+  margin-top: 10px;
+}
+
+.mi-div {
+  width: 0; /* Inicialmente oculto */
+  overflow: hidden; /* Oculta el texto mientras está colapsado */
+  white-space: nowrap; /* Evita saltos de línea */
+  transition: width 0.5s ease; /* Animación del ancho */
+  display: none;
+}
+.contratitem {
+  display: flex;
+  justify-content:right;
+  align-items:start;
+  transition: margin-left 0.5s ease; /* Animación del margen */
+}
+.contenedor:hover .mi-div {
+  width: 50px; /* Ancho al expandirse */
+  display: flex;
+}
+
+.contenedor:hover .contratitem {
+  margin-left: 10px; /* Empuja el div rojo hacia la derecha */
+}
+.tenantContracts{
+  justify-content: space-between;
+  display:flex;
+  flex-direction:row
 }
 .mi-button{
     margin-left: 20px;
+}
+
+.sidebar-private {
+    background-color: rgba(100, 200, 255, 0.9);
+}
+
+.sidebar-private .nav-link {
+    color: rgba(255, 255, 255, 0.85);
+    padding-left: 1.5rem;
+}
+
+.sidebar-private .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+}
+
+.sidebar-private .nav-link.active-sidebar-link {
+    background-color: rgba(255, 255, 255, 0.35);
+    color: #ffffff;
+    font-weight: bold;
+    box-shadow: inset 3px 0 0 #fff;
 }

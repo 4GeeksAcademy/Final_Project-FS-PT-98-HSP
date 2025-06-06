@@ -11,25 +11,24 @@ CORS(apartments_api)
 @jwt_required()
 def create_apartment():
     body = request.get_json()
+    
     if not body:
         return jsonify({"msg": "No data provided"}), 400
     
     new_apartment = Apartment(
         address=body.get("address"),
-        number=body.get("number"),
-        stairs=body.get("stairs"),
-        floor=body.get("floor"),
-        door=body.get("door"),
         postal_code=body.get("postal_code"),
         city=body.get("city"),
-        owner_id=body.get("owner_id")
+        owner_id=body.get("owner_id"),
+        is_rent =body.get("is_rent")
     )
-
+    
     try:
         new_apartment = Apartment(**body)
         db.session.add(new_apartment)
         db.session.commit()
-        return jsonify(new_apartment.serialize()), 201
+        return jsonify({"apartments":new_apartment.serialize(),
+                        "msg":"La vivienda se ha registrado con exito"}), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({"msg": str(e)}), 500
@@ -54,6 +53,15 @@ def get_apartments():
     except Exception as e:
         return jsonify({"msg": str(e)}), 500
     
+@apartments_api.route('/notrented', methods=['GET'])
+@jwt_required()
+def get_apartments_not_rented():
+    try:
+        apartments = Apartment.query.filter_by(is_rent=False).all()
+        return jsonify([apartment.serialize() for apartment in apartments]), 200
+    except Exception as e:
+        return jsonify({"msg": str(e)}), 500
+    
 @apartments_api.route('/<int:id>', methods=['PUT'])
 @jwt_required()
 def update_apartment(id):
@@ -65,9 +73,11 @@ def update_apartment(id):
 
     if not apartment:
         return jsonify({"msg": "Apartment not found"}), 404
-    
+    protected_fields = ["id", "owner_id"]
     try:
         for key, value in body.items():
+            if key in protected_fields:
+                continue
             if hasattr(apartment, key):
                 setattr(apartment, key, value)
         db.session.commit()

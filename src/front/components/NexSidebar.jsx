@@ -1,24 +1,22 @@
-
-
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { iCons } from "../assets/img/fontawesome";
+
 
 const SidebarMenu = ({ setActiveOption }) => {
 const location = useLocation();
 const navigate = useNavigate();
 
 const navItems = [
-{ "name": "Inicio", "path": "/PropietarioIndex", "icon": "gauge-high", "internalOption": null },
-{ "name": "Viviendas", "path": "/Viviendas", "icon": "house-chimney", "internalOption": "viviendas" },
-{ "name": "Contratos", "path": "/Contrato", "icon": "file-signature", "internalOption": "contrato" },
-{ "name": "Inquilinos", "path": "/Inquilinos", "icon": "people-roof", "internalOption": "inquilinos" },
-{ "name": "Incidencias", "path": "/Incidencias", "icon": "triangle-exclamation", "internalOption": "incidencias" },
-{ "name": "Perfil", "path": "/Perfil", "icon": "user", "internalOption": "perfil" },
-{" name": "Salir", "path": "/acceso", "icon": "right-from-bracket", "internalOption": "salir" }
+{ name: "Inicio", path: "/PropietarioIndex", icon: "gauge-high", internalOption: null },
+{ name: "Viviendas", path: "/Viviendas", icon: "house-chimney", internalOption: "viviendas" },
+{ name: "Contratos", path: "/Contrato", icon: "file-signature", internalOption: "contrato" },
+{ name: "Inquilinos", path: "/Inquilinos", icon: "people-roof", internalOption: "inquilinos" },
+{ name: "Incidencias", path: "/Incidencias", icon: "triangle-exclamation", internalOption: "incidencias" },
+{ name: "Perfil", path: "/Perfil", icon: "user", internalOption: "perfil" },
+{ name: "Salir", path: "/acceso", icon: "right-from-bracket", internalOption: "salir" },
 ];
-"path"
+
 return (
 <div
 className="sidebar-private d-flex flex-column"
@@ -28,6 +26,7 @@ minHeight: '100vh',
 backgroundColor: 'rgba(138, 223, 251, 0.8)',
 padding: '1.5rem 1rem',
 boxShadow: '2px 0 10px rgba(0, 0, 0, 0.1)',
+position: 'fixed',
 top: 0,
 left: 0,
 zIndex: 1000,

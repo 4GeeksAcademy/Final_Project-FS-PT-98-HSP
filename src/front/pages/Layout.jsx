@@ -21,7 +21,7 @@ export const Layout = () => {
     return (
         <ScrollToTop>
             {showPublicNavbar && <Navbar />}
-            {showPrivateNavbar && <NavbarPrivate />}
+            
             {showSecondaryNavbar && <NavbarSecondary />}
             <Outlet />
             <Footer />

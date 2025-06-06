@@ -31,7 +31,7 @@ class Apartment(db.Model):
 
     def serialize(self):
         return {
-            "apartment_id": self.id,
+            "id": self.id,
             "address": self.address,
             "postal_code": self.postal_code,
             "city": self.city,
