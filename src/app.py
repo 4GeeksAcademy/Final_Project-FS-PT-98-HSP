@@ -1,6 +1,16 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
+from flask_cors import CORS
+from flask import Flask
+from dotenv import load_dotenv
+from werkzeug.middleware.proxy_fix import ProxyFix
+from werkzeug.utils import secure_filename
+from datetime import timedelta
+from flask_jwt_extended import JWTManager
+from api.commands import setup_commands
+from api.admin import setup_admin
+from api.routes import apartments_api, users_api, contracts_api, issues_api, actions_api
 import os
 from pathlib import Path
 from flask import Flask, request, jsonify, url_for, send_from_directory
@@ -9,16 +19,14 @@ from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
 from api.models import db
 """from .models import db """
-from api.routes import apartments_api, users_api, contracts_api, issues_api, actions_api
-from api.admin import setup_admin
-from api.commands import setup_commands
-from flask_jwt_extended import JWTManager
-from datetime import timedelta
-from werkzeug.utils import secure_filename
-from werkzeug.middleware.proxy_fix import ProxyFix
-from dotenv import load_dotenv
 
-env_path = Path(__file__).resolve().parent.parent / '.env'  # Sube dos niveles desde src/
+app = Flask(__name__)
+
+CORS(app, origins=[
+     "https://refactored-computing-machine-69r94jvv6p6jhg6x-3000.app.github.dev"], supports_credentials=True)
+
+
+env_path = Path(__file__).resolve().parent.parent / '.env'
 load_dotenv(env_path)
 
 
@@ -46,20 +54,23 @@ if db_url is not None:
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
 
+
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+           filename.rsplit('.', 1)[1].lower(
+           ) in app.config['ALLOWED_EXTENSIONS']
+
 
 if os.getenv('CODESPACES'):
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
-    
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.config['ALLOWED_EXTENSIONS'] = ALLOWED_EXTENSIONS
-app.config["JWT_SECRET_KEY"] =os.getenv("SECRET_KEY") 
+app.config["JWT_SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
-jwt=JWTManager(app)
+jwt = JWTManager(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 MIGRATE = Migrate(app, db, compare_type=True)
@@ -94,6 +105,8 @@ def sitemap():
     return send_from_directory(static_file_dir, 'index.html')
 
 # any other endpoint will try to serve it like a static file
+
+
 @app.route('/<path:path>', methods=['GET'])
 def serve_any_other_file(path):
     if not os.path.isfile(os.path.join(static_file_dir, path)):
