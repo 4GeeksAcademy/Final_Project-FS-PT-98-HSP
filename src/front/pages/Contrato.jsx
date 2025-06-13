@@ -11,9 +11,7 @@ import { format, differenceInDays } from 'date-fns';
 
 const Contrato = () => {
   const { store, dispatch } = useGlobalReducer();
-  const [item,setItem]=useState(null)
-
-  const [item, setItem] = useState()
+  const [item, setItem] = useState(null)
 
   const fetchData = async () => {
     try {
@@ -23,7 +21,7 @@ const Contrato = () => {
         await dispatch({ type: "add_contracts", value: data.contracts });
       }
     } catch (error) {
-      
+
     }
   };
 
@@ -31,13 +29,13 @@ const Contrato = () => {
 
     fetchData();
   }, []);
-  
+
   const handleDownloadContract = async () => {
     console.log(item)
     try {
 
-      const data = contracts.downloadcontract(item,store.token)
-      
+      const data = contracts.downloadcontract(item, store.token)
+
 
     } catch (error) {
 
@@ -113,7 +111,7 @@ const Contrato = () => {
                       );
                       const splitDocument = item.document.split("/").pop();
                       const start = new Date();
-                      const end =new Date(item.end_date);
+                      const end = new Date(item.end_date);
                       const diffDays = differenceInDays(end, start, "days")
                       return (
                         <li
@@ -162,7 +160,7 @@ const Contrato = () => {
                       dispatch({ type: "addstart_date", value: e.target.value })}
                   />
                 </div>
-                
+
                 <div className="mb-3">
                   <label htmlFor="start_day" className="form-label">
                     Fecha de Fin
