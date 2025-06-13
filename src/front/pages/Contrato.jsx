@@ -11,7 +11,9 @@ import { format, differenceInDays } from 'date-fns';
 
 const Contrato = () => {
   const { store, dispatch } = useGlobalReducer();
-  const [item, setItem] = useState(null)
+  const [item,setItem]=useState(null)
+
+  const [item, setItem] = useState()
 
   const fetchData = async () => {
     try {

@@ -63,9 +63,9 @@ if (item.path !== location.pathname || item.name === "Salir") {
 navigate(item.path);
 }
 
-if (item.name === "Salir") {
+/*if (item.name === "Salir") {
 localStorage.removeItem("jwt-token");
-}
+}*/
 }}
 style={{
 transition: 'background-color 0.2s, color 0.2s',

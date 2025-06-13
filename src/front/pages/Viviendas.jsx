@@ -86,7 +86,7 @@ const Viviendas = () => {
               <p>
                 Aquí puedes visualizar, cargar o gestionar viviendas activas.
               </p>
-              <div className="map" style={{ display: `${store.visibility2}` }}>
+              <div className="map" style={{ display: `${store.vista}` }}>
                 <ul className="list-group">
                   {
                     store && store.apartments.map((item) => {
@@ -112,16 +112,16 @@ const Viviendas = () => {
                 <button className="btn btn-success mt-2"
                   onClick={(e) => {
                     dispatch({
-                      type: "register",
+                      type: "vista",
                       value: "none",
                     })
                     dispatch({
-                      type: "login",
+                      type: "vista2",
                       value: "",
                     })
                   }}>Añadir Vivienda</button>
               </div>
-             <div className="form" style={{ display: `${store.visibility}` }}>
+             <div className="form" style={{ display: `${store.vista2}` }}>
               <div className="mb-3">
               <label htmlFor="address" className="form-label">
                 Direccion
@@ -194,14 +194,14 @@ const Viviendas = () => {
             <button className="btn btn-success mi-button"
               onClick={() => {
                 dispatch({
-                  type: "register",
+                  type: "vista",
                   value: "",
                 })
                 dispatch({
-                  type: "login",
+                  type: "vista2",
                   value: "none",
                 })
-                fetchData()
+                fetchApartments()
               }}>Salir</button>
             </div>
             </div>

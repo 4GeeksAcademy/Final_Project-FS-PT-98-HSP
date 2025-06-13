@@ -52,7 +52,7 @@ const PropietarioIndex = () => {
         setTotalContratos(0);
       }
 
-      try {
+     /* try {
 
         const res = await fetch("/api/incidencias/count");
         const data = await res.json();
@@ -60,7 +60,7 @@ const PropietarioIndex = () => {
       } catch (error) {
         console.error("Error al cargar total de incidencias", error);
         setTotalIncidencias(0);
-      }
+      }*/
     };
     fetchData();
   }, []);

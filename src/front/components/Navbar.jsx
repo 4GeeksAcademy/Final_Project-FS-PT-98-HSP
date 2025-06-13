@@ -6,7 +6,9 @@ const Navbar = () => {
   const { store, dispatch } = useGlobalReducer();
   const history = useNavigate();
   const handleNavigatePropietarioIndex = () => history("/propietarioindex");
-  const handleNavigateAcceso=()=>history("/acceso")
+  const handleNavigateAcceso=()=>history("/Acceso")
+
+  
   const accessToPropietarioIndex=()=>{
     
     if (store.token.length>0){

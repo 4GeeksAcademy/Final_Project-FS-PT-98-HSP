@@ -1,5 +1,5 @@
 from flask import request, jsonify, Blueprint
-from api.models import db, AssocTenantApartmentContract
+from api.models import db, AssocTenantApartmentContract,Apartment
 from flask_cors import CORS
 from flask_jwt_extended import jwt_required
 
@@ -35,7 +35,7 @@ def create_asociation():
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
     
-@asociates_api.route('/<int:id>', methods=['PUT'])
+@asociates_api.route('/<int:id>/update', methods=['PUT'])
 @jwt_required()
 def update_asociates(id):
     body = request.get_json()
@@ -59,3 +59,46 @@ def update_asociates(id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"msg": str(e)}), 500
+    
+@asociates_api.route('/update-association-apartment/<int:assoc_id>/<int:apartment_id>', methods=['PUT'])
+@jwt_required()
+def update_association_and_apartment(assoc_id, apartment_id):
+    assoc_body = request.get_json().get("association")
+    apartment_body = request.get_json().get("apartment")
+
+    if not assoc_body or not apartment_body:
+        return jsonify({"msg": "Faltan datos para actualizar"}), 400
+
+    try:
+        # INICIO TRANSACCIÓN
+        asociacion = AssocTenantApartmentContract.query.get(assoc_id)
+        apartamento = Apartment.query.get(apartment_id)
+
+        if not asociacion:
+            return jsonify({"msg": "Asociación no encontrada"}), 404
+        if not apartamento:
+            return jsonify({"msg": "Apartamento no encontrado"}), 404
+
+        # CAMPOS PROTEGIDOS
+        assoc_protected = ["id", "tenant_id", "contract_id"]
+        apt_protected = ["id", "owner_id"]
+
+        for key, value in assoc_body.items():
+            if key not in assoc_protected and hasattr(asociacion, key):
+                setattr(asociacion, key, value)
+
+        for key, value in apartment_body.items():
+            if key not in apt_protected and hasattr(apartamento, key):
+                setattr(apartamento, key, value)
+
+        db.session.commit()
+
+        return jsonify({
+            "msg": "Asociación y apartamento actualizados correctamente",
+            "association": asociacion.serialize(),
+            "apartment": apartamento.serialize()
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"msg": "Error durante la actualización", "error": str(e)}), 500

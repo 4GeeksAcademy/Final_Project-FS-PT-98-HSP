@@ -264,7 +264,7 @@ const LoginSection = () => {
     }
   };
 
-
+console.log(store)
   return (
     <div>
       <section
@@ -311,6 +311,7 @@ const LoginSection = () => {
                             type="email"
                             id="email"
                             className="form-control form-control-lg"
+                            autocomplete="username"
                             onChange={(e) => dispatch({ type: "addEmail", value: e.target.value })}
                             value={store.email || ''}
                           />
@@ -320,6 +321,7 @@ const LoginSection = () => {
                           <input
                             type="password"
                             id="pass"
+                            autocomplete="current-password"
                             className="form-control form-control-lg"
                             onChange={(e) => dispatch({ type: "addPassword", value: e.target.value })}
                             value={store.password || ''}

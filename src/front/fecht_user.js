@@ -208,6 +208,7 @@ const Url = "https://miniature-sniffle-7vpgxp6x9g5vfwx97-3001.app.github.dev/use
         }
     },
     get_asociation: async (id, token) => {
+        
         try {
             const request = await fetch(`${Url}/${id}/contracts/assoc`, {
                   method: "GET", 
@@ -316,18 +317,19 @@ createtenant: async (firstname, lastname, email, pass, phone, national_id, aacc,
         }
     },
 
-    sendTenantInvite: async (firstname, lastname, email, pass, phone, national_id, aacc, token) => {
+    sendTenantInvite: async (firstname, lastname, email, phone, national_id, aacc, token) => {
          let tenantData= {
              "first_name":`${firstname}`,
              "last_name":`${lastname}`,
              "email": `${email}`, 
-             "password": `${pass}`,
-             "phone":`$ {phone}`,
+             "phone":`${phone}`,
              "national_id":`${national_id}`,
              "account_number":`${aacc}`,
              "role":"INQUILINO"
            
         };
+        console.log(tenantData)
+        console.log(token)
         try {
             const request = await fetch(`${Url}/register-tenant-initiate`, {
                 method: "POST",
@@ -341,7 +343,7 @@ createtenant: async (firstname, lastname, email, pass, phone, national_id, aacc,
             return response
         } catch (error) {
             console.error("Error al enviar invitación de inquilino:", error);
-            return { success: false, message: "Error de conexión al enviar invitación." };
+            return { success: false, "error": "Error de conexión al enviar invitación." };
         }
     },
 

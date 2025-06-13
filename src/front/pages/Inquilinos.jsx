@@ -55,11 +55,10 @@ const handleCreatenant = async () => {
 
   try {
     // Paso 1: Crear inquilino
-    const tenantResult = await users.createtenant(
+    const tenantResult = await users.sendTenantInvite(
       store.firstname,
       store.lastname,
       store.email,
-      store.password,
       store.phone,
       store.national_id,
       store.aacc,
@@ -117,7 +116,7 @@ const handleCreatenant = async () => {
 
  
   const Ctenant = async () => {
-    if(store.firstname==="" || store.lastname===""|| store.email==="" || store.password=== ""||store.phone==="" || store.national_id==="" || store.aacc===""                           
+    if(store.firstname==="" || store.lastname===""|| store.email==="" || store.phone==="" || store.national_id==="" || store.aacc===""                           
     || store.contract_start_date==="" || store.contract_end_date==="" ||  store.contract==="" ){
        swal({
           title: "ERROR",
@@ -125,14 +124,15 @@ const handleCreatenant = async () => {
           icon: "warning",
           buttons: true,
         });
-    }
-   
-      await
+    }else{
+       await
         handleCreatenant();
+    }
   
   };
 
-  console.log(store)
+  console.log(itpartment)
+  console.log(itemcontract)
   return (
     <>
 
@@ -146,7 +146,7 @@ const handleCreatenant = async () => {
             <div className="p-4 border rounded bg-light">
               <h2>Gestión de Inquilinos</h2>
               <p>Aquí puedes visualizar, cargar o gestionar inquilinos activos.</p>
-              <div className="tenantContracts" style={{ display: `${store.visibility2}` }}>
+              <div className="tenantContracts" style={{ display: `${store.vista2}` }}>
               <div className="map" >
                 <div className="form-outline mb-1 " >
                   <label
@@ -213,26 +213,6 @@ const handleCreatenant = async () => {
                   
                 </div>
 
-                <div className="form-outline mb-1">
-                   <label
-                    className="form-label"
-                    htmlFor="passh"
-                  >
-                    Contraseña
-                  </label>
-                  <input
-                    type="password"
-                    id="passh"
-                    className="form-control form-control-lg"
-                    onChange={(e) =>
-                      dispatch({
-                        type: "addPassword",
-                        value: e.target.value,
-                      })
-                    }
-                  />
-                 
-                </div>
 
                 <div className="form-outline mb-1">
                   <label
@@ -302,12 +282,12 @@ const handleCreatenant = async () => {
                 <button className="btn btn-info mi-button"
                   onClick={() => {
                     dispatch({
-                      type: "register",
-                      value: "none",
+                      type: "vista",
+                      value: "",
                     })
                     dispatch({
-                      type: "login",
-                      value: "",
+                      type: "vista2",
+                      value: "none",
                     })
                   fetchData()
                   }}>Registra el Alquiler</button>
@@ -353,40 +333,37 @@ const handleCreatenant = async () => {
                 <button className="btn btn-success mi-button">contrato</button>
               </div>
               </div>
-              <div className="map" style={{ display: `${store.visibility}` }}>
+              <div className="map" style={{ display: `${store.vista}` }}>
 
                 <div className="map" >
-                  <h3>INQUILINO</h3>
+                  <h3>CONTRATOS PENDIENTES DE ASIGNAR VIVIENDA</h3>
 
                   <ul className="list-group">
 
-                    {store && store.tenant.map((item) => {
-
+                    {store && store.asociation.map((item) => {
+                      const startDate = new Date(item.asociaciones[0].contract.start_date).toLocaleDateString("es-ES", {
+                          day: "2-digit",
+                          month: "long",
+                          year: "numeric"
+                        });
+                        console.log(item.asociaciones[0].tenant.first_name)
                         return (
                           <li
-                            key={item.id}
+                            key={item.asociaciones[0].assoc_id}
                             className="list-group-item d-flex justify-content-between contenedor">
-                               <div className="mi-div p-3 mb-2 bg-info text-dark"><input className="form-check-input" type="checkbox" value="" id="checkDefault"/></div>
+                               <div className="mi-div p-3 mb-2 bg-info text-dark"><input className="form-check-input" 
+                               type="checkbox" value="" id="checkDefault"onClick={(e)=>{setItemcontract(item.asociaciones[0].assoc_id)} }/></div>
                             <div className="contratitem">
-                             
-                              <p>Nombre: {item.first_name}, Apellidos: {item.last_name}, Dni: {item.national_id}</p>
+                              <h5>Tu Contrato con:</h5>
+                              <p> Inquilino: {item.asociaciones[0].tenant.first_name}, {item.asociaciones[0].tenant.last_name} y de fecha  {startDate} </p>
+                               <p>No tiene vivienda signada. Puedes asignarle una de las viviendas que estan más abajo.</p>
                             </div>
                         
                           </li>
                         );
                       })}
                   </ul>
-                  <button className="btn btn-info  mt-2 "
-                    onClick={(e) => {
-                      dispatch({
-                        type: "register",
-                        value: "",
-                      })
-                      dispatch({
-                        type: "login",
-                        value: "none",
-                      })
-                    }}>Añadir Inquilino</button>
+        
                 </div>
                 <div className="map" >
                   <h3>VIVIENDAS</h3>
@@ -410,56 +387,17 @@ const handleCreatenant = async () => {
                   </ul>
 
                 </div>
-                <div className="map" >
-                  <h3>CONTRATOS</h3>
-                  <ul className="list-group">
-                    {
-                      store && store.contracts.map((item) => {
-                        const startDate = new Date(item.start_date).toLocaleDateString("es-ES", {
-                          day: "2-digit",
-                          month: "long",
-                          year: "numeric"
-                        });
-
-                        const endDate = new Date(item.end_date).toLocaleDateString("es-ES", {
-                          day: "2-digit",
-                          month: "long",
-                          year: "numeric"
-                        }
-                        );
-                        const splitDocument = item.document.split("/").pop();
-                        const start = new Date();
-                        const end = new Date(item.end_date);
-                        const diffDays = differenceInDays(end, start, "days")
-                        return (
-                          <li
-                            key={item.id}
-                            className="list-group-item d-flex justify-content-between contenedor"
-                            style={{ background: item.background }}>
-                             <div className="mi-div p-3 mb-2 bg-info text-dark"><input className="form-check-input" 
-                             type="checkbox" value="" id="checkDefault" onClick={(e)=>{setItemcontract(item.id)} }/></div> 
-                            <div className="contratitem">
-                              <p>Fecha de inicio: {startDate}, Fecha de Finalizacion: {endDate}, Documento: {splitDocument} Faltan {diffDays} días para su finalización </p>
-                            </div>
-  
-                          </li>
-                        );
-                      })}{(!store.contracts || store.contracts.length === 0) && (
-                        <h1>No hay contratos que mostrar</h1>
-                      )}
-                  </ul>
-
-                </div>
+             
                 <button className="btn btn-info mt-2" >Crear Alquiler</button>
                 <button className="btn btn-info mt-2 mi-button"
                   onClick={() => {
                     dispatch({
-                      type: "register",
-                      value: "",
+                      type: "vista",
+                      value: "none",
                     })
                     dispatch({
-                      type: "login",
-                      value: "none",
+                      type: "vista2",
+                      value: "",
                     })
                   }}>volver</button>
               </div>

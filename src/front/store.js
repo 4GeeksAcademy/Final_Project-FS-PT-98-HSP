@@ -18,7 +18,9 @@ export const initialStore = () => {
     phone: "",
     national_id: "",
     aacc: "",
-    token: localStorage.getItem("jwt-token") || "",
+    token: "",
+    vista:"none",
+    vista2:"",
     visibility: "none",
     visibility2: "block",
     validToken: false,
@@ -49,6 +51,16 @@ export default function storeReducer(store, action = {}) {
       return {
         ...store,
         address: action.value,
+      };
+       case "vista":
+      return {
+        ...store,
+        vista: action.value,
+      };
+       case "vista2":
+      return {
+        ...store,
+        vista2: action.value,
       };
     case "postal_code":
       return {
@@ -200,36 +212,36 @@ export default function storeReducer(store, action = {}) {
         ...store,
         todos: action.value,
       };
-       case "add_tenant":
+    case "add_tenant":
     
       return {
         ...store,
-        tenant:action.value,
+        tenant: action.value,
       };
-      case "add_asociation":
+    case "add_asociation":
     
       return {
         ...store,
         asociation: action.value,
       };
-      case "add_contracts":
+    case "add_contracts":
      
       return {
         ...store,
         contracts: action.value,
       };
-       case "add_apartments":
+    case "add_apartments":
      
       return {
         ...store,
         apartments: action.value,
       };
-       case "add_tenant":
+    case "add_tenant":
      
 
       return {
         ...store,
-        tenant:action.value,
+        tenant: action.value,
       };
     default:
       throw Error("Unknown action.");

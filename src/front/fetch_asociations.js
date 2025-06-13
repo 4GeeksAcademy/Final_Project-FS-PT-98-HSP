@@ -8,13 +8,40 @@ export const Asociations = {
       "contract_id": contract_id,
       "is_active": Boolean(true),
     };
-  console.log(asociate)
+  
     try {
       const request = await fetch(`${Url}/create`, {
         method: "POST",
         headers: {
           "content-Type": "application/json",
           "Authorization": `Bearer  ${token}`
+        },
+        body: JSON.stringify(asociate),
+      });
+      const response = await request.json();
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  },
+  updateasociation:async (apartment_id, id, token) => {
+    let asociate = {
+  "association": {
+    "apartment_id": apartment_id
+  },
+  "apartment": {
+    "is_rent": true
+  }
+}
+  
+    try {
+      const request = await fetch(`${Url}/update-association-apartment/${id}/${apartment_id}`, {
+        method: "PUT",
+        headers: {
+          "content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(asociate),
       });

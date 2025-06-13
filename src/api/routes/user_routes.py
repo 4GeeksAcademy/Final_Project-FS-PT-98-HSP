@@ -287,7 +287,7 @@ def get_contracts_by_owner(user_id):
         contrato_dict["asociaciones"] = asociaciones
         contratos_data.append(contrato_dict)
 
-    return jsonify(asociaciones), 200
+    return jsonify(contratos_data), 200
 
 """VALIDATION ENDPOINT"""
 @users_api.route('/private', methods=['GET'])
@@ -372,7 +372,7 @@ def reset_password():
     data_request = request.get_json()
     new_password = data_request.get('password')
     if not new_password:
-        return jsonify({"message": "La contraseña es obligatoria"}), 400
+        return jsonify({"error": "La contraseña es obligatoria"}), 400
 
     try:
         user_id = get_jwt_identity()
@@ -406,16 +406,16 @@ def register_tenant_initiate():
 
 
     if not email or not first_name:
-        return jsonify({"message": "Nombre y email del inquilino son obligatorios"}), 400
+        return jsonify({"error": "Nombre y email del inquilino son obligatorios"}), 400
     
     if '@' not in email:
-        return jsonify({"message": "Formato de email inválido"}), 400
+        return jsonify({"error": "Formato de email inválido"}), 400
 
     email_lower = email.strip().lower()
     existing_user = User.query.filter_by(email=email_lower).first()
 
     if existing_user:
-        return jsonify({"message": "Ya existe un usuario con este email"}), 409
+        return jsonify({"error": "Ya existe un usuario con este email"}), 409
 
     temporary_password = str(uuid.uuid4())
     hashed_temporary_password = bcrypt.generate_password_hash(temporary_password).decode('utf-8')
@@ -462,12 +462,13 @@ def register_tenant_initiate():
                       html=html_body)
         mail.send(msg)
 
-        return jsonify({"message": "Inquilino registrado exitosamente. Se ha enviado un email para configurar su contraseña."}), 201
+        return jsonify({"msg": "Inquilino registrado exitosamente. Se ha enviado un email para configurar su contraseña.",
+                        "tenant":new_tenant.serialize()}), 201
 
     except Exception as e:
         db.session.rollback()
         print(f"Error al registrar inquilino o enviar email: {e}")
-        return jsonify({"message": "Error en el servidor al registrar inquilino, intenta más tarde."}), 500
+        return jsonify({"error": "Error en el servidor al registrar inquilino, intenta más tarde."}), 500
 
 
 @users_api.route('/set-password', methods=["POST"])
